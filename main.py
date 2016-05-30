@@ -17,9 +17,16 @@ def hello_monkey():
     """Respond to incoming calls with a simple text message."""
     # msg = twilio.twiml.Body()
     msg = request.values.get('Body', None)
-    resp = twilio.twiml.Response()
-    resp.message(msg)
-    return str(resp)
+
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+
+    api = tweepy.API(auth)
+    api.update_status('msg')
+
+    # resp = twilio.twiml.Response()
+    # resp.message(msg)
+    # return str(resp)
 
 if __name__ == "__main__":
     app.run(debug=True)
