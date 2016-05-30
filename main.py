@@ -16,7 +16,7 @@ app = Flask(__name__)
 def hello_monkey():
     """Respond to incoming calls with a simple text message."""
     # msg = twilio.twiml.Body()
-    msg = twilio.twiml.Body.body
+    msg = twilio.twiml.Sms.body
     resp = twilio.twiml.Response()
     resp.message(msg)
     return str(resp)
