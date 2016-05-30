@@ -1,1 +1,1 @@
-web: gunicorn tweetdc.wsgi --log-file -
+web: gunicorn TweetDC.wsgi --log-file -
