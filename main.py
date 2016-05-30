@@ -17,7 +17,7 @@ def hello_monkey():
     """Respond to incoming calls with a simple text message."""
 
     resp = twilio.twiml.Response()
-    resp.message(resp.body)
+    resp.message("Another test")
     return str(resp)
 
 if __name__ == "__main__":
