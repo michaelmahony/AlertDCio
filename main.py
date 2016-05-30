@@ -22,7 +22,7 @@ def hello_monkey():
     auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 
     api = tweepy.API(auth)
-    api.update_status('msg')
+    api.update_status(msg)
 
     # resp = twilio.twiml.Response()
     # resp.message(msg)
