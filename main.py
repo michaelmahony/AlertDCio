@@ -67,7 +67,7 @@ def hello_monkey():
                 tweeted = True
 
                 print("Tweeted: " + element)
-                time.sleep(20)
+                time.sleep(2)
             except:
                 pass
             l = file['old_tweets']
