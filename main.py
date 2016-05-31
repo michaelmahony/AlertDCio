@@ -23,9 +23,11 @@ def hello_monkey():
     # msg = request.values.get('Body', None)
 
 
-
-    headers = {'User-Agent': 'Chrome 41.0.2228.0'}
-    response = requests.get('http://trainingtrack.hsema.dc.gov/NRss/RssFeed/AlertDCList?showlink=n&type=iframe&id=912370&hash=36b986985ed3f06443ebb13a0ef1b4ff', headers=headers, verify=False)
+    try:
+        headers = {'User-Agent': 'Chrome 41.0.2228.0'}
+        response = requests.get('http://trainingtrack.hsema.dc.gov/NRss/RssFeed/AlertDCList?showlink=n&type=iframe&id=912370&hash=36b986985ed3f06443ebb13a0ef1b4ff', headers=headers, verify=False)
+    except:
+        return "Failed during request of rss feed"
 
     data = response.text
 
