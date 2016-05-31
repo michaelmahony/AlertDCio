@@ -84,6 +84,8 @@ def hello_monkey():
         file['last_tweeted'] = datetime.datetime.now()
     if 'last_tweeted' in file:
         last_tweeted = file['last_tweeted']
+    else:
+        last_tweeted = False
     last_synced = file['last_synced']
     file.close()
 
