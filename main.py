@@ -5,6 +5,7 @@ import bs4
 import html5lib
 import shelve
 import time
+import datetime
 
 TWILIO_SID = "AC7df090b4f11ecf908a168fdceb92f852"
 TWILIO_SECRET = "5e6c04bca18df9bdda58c9292ae77ee0"
@@ -77,12 +78,25 @@ def hello_monkey():
             file['old_tweets'] = l
         file.close()
 
+    file = shelve.open('last_synced')
+    file['last_synced'] = datetime.datetime.now()
+    if tweeted == True:
+        file['last_tweeted'] = datetime.datetime.now()
+    if 'last_tweeted' in file:
+        last_tweeted = file['last_tweeted']
+    last_synced = file['last_synced']
+    file.close()
 
 
     if tweeted:
-        return "Updated status"
+        return "Issued tweet"
     else:
-        return "No update available"
+        message = "No update "
+        if last_synced:
+            message += "| Last synced: " + str(last_synced)
+        if last_tweeted:
+            message += " | Last tweeted: " + str(last_tweeted)
+        return message
 
     resp = twilio.twiml.Response()
     resp.message(msg)
