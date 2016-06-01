@@ -1,8 +1,10 @@
+import os
+
 from flask import Flask, request, redirect
+from flask_sqlalchemy import SQLAlchemy
 import tweepy
 import requests
 import bs4
-import html5lib
 import shelve
 import time
 import datetime
@@ -16,6 +18,11 @@ ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
 ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
+
+
+
 
 @app.route("/", methods=['GET', 'POST'])
 def hello_monkey():
@@ -65,8 +72,8 @@ def hello_monkey():
             try:
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-                api = tweepy.API(auth)
-                api.update_status(element)
+                # api = tweepy.API(auth)
+                # api.update_status(element)
                 tweeted = True
 
                 print("Tweeted: " + element)
