@@ -69,12 +69,14 @@ def hello_monkey():
 
     tweeted = False
 
+    response = ""
+
     for index, element in enumerate(parsed_list):
         # Has the tweet already been sent?
         missing = Tweet.query.filter_by(short_text=element).first()
         if missing is not None:
             # Already tweeted, do nothing
-            print("Already tweeted this: " + element)
+            response += "Already tweeted this: " + element +"<br>"
 
         else:
             try:
@@ -83,11 +85,11 @@ def hello_monkey():
                 api = tweepy.API(auth)
                 api.update_status(element)
                 tweeted = True
-                print("Tweeted: " + element)
+
+                response += "Tweeted: " + element + "<br>"
                 time.sleep(2)
             except:
                 pass
-
             # Add the new tweet to the database
             tweet = Tweet(element, element)
             db.session.add(tweet)
@@ -97,9 +99,11 @@ def hello_monkey():
 
 
     if tweeted:
-        return "Issued tweet"
+        response += "Issued tweet"
     else:
-        return "No update "
+        response += "No update "
+
+    return response
 
 
 
