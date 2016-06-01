@@ -21,7 +21,17 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
+class Tweet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    long_text = db.Column(db.String(1000))
+    short_text = db.Column(db.String(140))
 
+    def __init__(self, long_text, short_text):
+        self.long_text = long_text
+        self.short_text = short_text
+
+    def __repr__(self):
+        return str(self.long_text)
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -60,56 +70,39 @@ def hello_monkey():
     tweeted = False
 
     for index, element in enumerate(parsed_list):
-        file = shelve.open("old_tweets.dat")
-        if not 'old_tweets' in file:
-            file['old_tweets'] = []
-
-        if element in file['old_tweets']:
+        # Has the tweet already been sent?
+        missing = Tweet.query.filter_by(short_text=element).first()
+        if missing is not None:
             # Already tweeted, do nothing
             print("Already tweeted this: " + element)
+
         else:
-            parsed_list
             try:
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
                 # api = tweepy.API(auth)
                 # api.update_status(element)
                 tweeted = True
-
                 print("Tweeted: " + element)
                 time.sleep(2)
             except:
                 pass
-            l = file['old_tweets']
-            l.append(element)
-            file['old_tweets'] = l
-        file.close()
 
-    file = shelve.open('last_synced')
-    file['last_synced'] = datetime.datetime.now()
-    if tweeted == True:
-        file['last_tweeted'] = datetime.datetime.now()
-    if 'last_tweeted' in file:
-        last_tweeted = file['last_tweeted']
-    else:
-        last_tweeted = False
-    last_synced = file['last_synced']
-    file.close()
+            # Add the new tweet to the database
+            tweet = Tweet(element, element)
+            db.session.add(tweet)
+
+    # Save the new database state
+    db.session.commit()
 
 
     if tweeted:
         return "Issued tweet"
     else:
-        message = "No update "
-        if last_synced:
-            message += "| Last synced: " + str(last_synced)
-        if last_tweeted:
-            message += " | Last tweeted: " + str(last_tweeted)
-        return message
+        return "No update "
 
-    resp = twilio.twiml.Response()
-    resp.message(msg)
-    return str(resp)
+
+
 
 
 # def scrape():
