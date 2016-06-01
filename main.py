@@ -18,7 +18,8 @@ ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
 ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://aycfvofyykjlpb:jcKi1FKYzalEXc2kO6xM3e2S4w@ec2-54-235-125-38.compute-1.amazonaws.com:5432/dcnp19lrmuogfm'
 db = SQLAlchemy(app)
 
 class Tweet(db.Model):
@@ -36,9 +37,8 @@ class Tweet(db.Model):
 
 @app.route("/", methods=['GET', 'POST'])
 def hello_monkey():
-    """Respond to incoming calls with a simple text message."""
-    # msg = twilio.twiml.Body()
-    # msg = request.values.get('Body', None)
+
+    print ('Called')
 
 
     try:
@@ -80,8 +80,8 @@ def hello_monkey():
             try:
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-                # api = tweepy.API(auth)
-                # api.update_status(element)
+                api = tweepy.API(auth)
+                api.update_status(element)
                 tweeted = True
                 print("Tweeted: " + element)
                 time.sleep(2)
