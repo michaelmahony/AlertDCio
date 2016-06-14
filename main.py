@@ -14,6 +14,8 @@ import shelve
 import time
 import datetime
 
+# C:\Users\User1\TweetDC\Scripts\Activate
+
 TWILIO_SID = "AC7df090b4f11ecf908a168fdceb92f852"
 TWILIO_SECRET = "5e6c04bca18df9bdda58c9292ae77ee0"
 
