@@ -2,6 +2,11 @@ import os
 
 from flask import Flask, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+
+import html
 import tweepy
 import requests
 import bs4
@@ -18,10 +23,13 @@ ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
 ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
 
 app = Flask(__name__)
+
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://aycfvofyykjlpb:jcKi1FKYzalEXc2kO6xM3e2S4w@ec2-54-235-125-38.compute-1.amazonaws.com:5432/dcnp19lrmuogfm'
 db = SQLAlchemy(app)
 
+# Define database models
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     long_text = db.Column(db.String(1000))
@@ -34,6 +42,9 @@ class Tweet(db.Model):
     def __repr__(self):
         return str(self.long_text)
 
+# Initialize flask-admin
+admin = Admin(app, template_mode='bootstrap3')
+admin.add_view(ModelView(Tweet, db.session))
 
 @app.route("/", methods=['GET', 'POST'])
 def hello_monkey():
@@ -65,33 +76,36 @@ def hello_monkey():
     # Remove empty elements
     parsed_list = [x for x in parsed_list if x != ""]
 
-    parsed_list = [x[0:139] for x in parsed_list]
+    # Unescape HTML
+    parsed_list = [html.unescape(x) for x in parsed_list]
 
     tweeted = False
 
     response = ""
 
-    for index, element in enumerate(parsed_list):
+    for index, long_entry in enumerate(parsed_list):
         # Has the tweet already been sent?
-        missing = Tweet.query.filter_by(short_text=element).first()
+
+        short_entry = long_entry[0:139]
+        missing = Tweet.query.filter_by(short_text=short_entry).first()
         if missing is not None:
             # Already tweeted, do nothing
-            response += "Already tweeted this: " + element +"<br>"
+            response += "Already tweeted this: " + short_entry +"<br>"
 
         else:
             try:
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
                 api = tweepy.API(auth)
-                api.update_status(element)
+                api.update_status(short_entry)
                 tweeted = True
 
-                response += "Tweeted: " + element + "<br>"
+                response += "Tweeted: " + short_entry + "<br>"
                 time.sleep(2)
             except:
                 pass
             # Add the new tweet to the database
-            tweet = Tweet(element, element)
+            tweet = Tweet(long_entry, short_entry)
             db.session.add(tweet)
 
     # Save the new database state

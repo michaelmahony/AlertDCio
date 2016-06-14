@@ -8,13 +8,15 @@ def run():
     headers = {'User-Agent': 'Chrome 41.0.2228.0'}
     finished = False
     while(finished == False):
-        response = requests.get('http://mighty-retreat-74693.herokuapp.com/', headers=headers, verify=False)
-        print(response.text)
-        time.sleep(60)
+        try:
+            response = requests.get('http://mighty-retreat-74693.herokuapp.com/', headers=headers, verify=False)
+            response = response.text.split("<br>")[-1]
+            print(response)
+            time.sleep(300)
 
-        file = shelve.open('last_synced')
-        file['last_synced'] = str(datetime.datetime.now())
-        file.close()
+        except:
+            print("Unable to connect")
+            time.sleep(30)
 
 
 run()
