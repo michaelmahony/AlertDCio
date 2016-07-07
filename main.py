@@ -13,33 +13,35 @@ import bs4
 import shelve
 import time
 import datetime
+import BaseConvert
 
 # C:\Users\User1\TweetDC\Scripts\Activate
 
-TWILIO_SID = "AC7df090b4f11ecf908a168fdceb92f852"
-TWILIO_SECRET = "5e6c04bca18df9bdda58c9292ae77ee0"
-
-CONSUMER_KEY ="FEuWmFAQ823t84qvzU75si5It"
-CONSUMER_SECRET = "dYnFyUvZgJoWZtza8McSvzVUUCFVmUOVqwMRRWIeRDIMI1ZOAN"
-ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
-ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
+CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
+CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
+ACCESS_KEY = os.environ["TWEETDC_ACCESS_KEY"]
+ACCESS_SECRET = os.environ["TWEETDC_ACCESS_SECRET"]
 
 app = Flask(__name__)
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://aycfvofyykjlpb:jcKi1FKYzalEXc2kO6xM3e2S4w@ec2-54-235-125-38.compute-1.amazonaws.com:5432/dcnp19lrmuogfm'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["TWEETDC_POSTGRES_URI"]
 db = SQLAlchemy(app)
 
 # Define database models
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    long_text = db.Column(db.String(1000))
+    long_text = db.Column(db.String(5000))
     short_text = db.Column(db.String(140))
+    date_time = db.Column(db.DateTime)
+    base62id = db.Col(db.String(10))
 
     def __init__(self, long_text, short_text):
         self.long_text = long_text
         self.short_text = short_text
+        self.date_time = datetime.datetime.now()
+        self.base62id = BaseConvert.encode(self.id, "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ");
 
     def __repr__(self):
         return str(self.long_text)
@@ -49,7 +51,7 @@ admin = Admin(app, template_mode='bootstrap3')
 admin.add_view(ModelView(Tweet, db.session))
 
 @app.route("/", methods=['GET', 'POST'])
-def hello_monkey():
+def tweet():
 
     print ('Called')
 
@@ -86,6 +88,8 @@ def hello_monkey():
     response = ""
 
     for index, long_entry in enumerate(parsed_list):
+        # limit the long entry to 1000 chars
+        long_entry = long_entry[0:999]
         # Has the tweet already been sent?
 
         short_entry = long_entry[0:139]
@@ -113,6 +117,7 @@ def hello_monkey():
     # Save the new database state
     db.session.commit()
 
+    response += "\n"
 
     if tweeted:
         response += "Issued tweet"
