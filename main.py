@@ -106,7 +106,7 @@ def tweet():
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
                 api = tweepy.API(auth)
-                # api.update_status(short_entry)
+                api.update_status(short_entry)
                 tweeted = True
 
                 response += "Tweeted: " + short_entry + "<br>"
