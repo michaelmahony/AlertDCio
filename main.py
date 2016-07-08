@@ -17,16 +17,19 @@ import BaseConvert
 
 # C:\Users\User1\TweetDC\Scripts\Activate
 
-CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
-CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
-ACCESS_KEY = os.environ["TWEETDC_ACCESS_KEY"]
-ACCESS_SECRET = os.environ["TWEETDC_ACCESS_SECRET"]
+TWILIO_SID = "AC7df090b4f11ecf908a168fdceb92f852"
+TWILIO_SECRET = "5e6c04bca18df9bdda58c9292ae77ee0"
+
+CONSUMER_KEY ="FEuWmFAQ823t84qvzU75si5It"
+CONSUMER_SECRET = "dYnFyUvZgJoWZtza8McSvzVUUCFVmUOVqwMRRWIeRDIMI1ZOAN"
+ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
+ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
 
 app = Flask(__name__)
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["TWEETDC_POSTGRES_URI"]
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://aycfvofyykjlpb:jcKi1FKYzalEXc2kO6xM3e2S4w@ec2-54-235-125-38.compute-1.amazonaws.com:5432/dcnp19lrmuogfm'
 db = SQLAlchemy(app)
 
 # Define database models
@@ -35,7 +38,7 @@ class Tweet(db.Model):
     long_text = db.Column(db.String(5000))
     short_text = db.Column(db.String(140))
     date_time = db.Column(db.DateTime)
-    base62id = db.Col(db.String(10))
+    base62id = db.Column(db.String(10))
 
     def __init__(self, long_text, short_text):
         self.long_text = long_text
@@ -103,7 +106,7 @@ def tweet():
                 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
                 api = tweepy.API(auth)
-                api.update_status(short_entry)
+                # api.update_status(short_entry)
                 tweeted = True
 
                 response += "Tweeted: " + short_entry + "<br>"
@@ -113,6 +116,9 @@ def tweet():
             # Add the new tweet to the database
             tweet = Tweet(long_entry, short_entry)
             db.session.add(tweet)
+            last = db.session.query(Tweet).order_by(Tweet.id.desc()).first()
+            last.base62id = BaseConvert.encode(last.id, "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ")
+
 
     # Save the new database state
     db.session.commit()
