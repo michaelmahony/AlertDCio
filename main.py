@@ -16,6 +16,7 @@ import bs4
 import shelve
 import time
 import datetime
+from datetime import timezone, timedelta
 import pytz
 import BaseConvert
 
@@ -83,7 +84,15 @@ class Tweet(db.Model):
     def __init__(self, long_text, short_text):
         self.long_text = long_text
         self.short_text = short_text
-        self.date_time = datetime.datetime.now(pytz.timezone("America/New_York"))
+
+        utctime = datetime.datetime.utcnow()
+        utctz = pytz.utc
+        utctime = utctz.localize(utctime)
+        easttz = pytz.timezone('US/Eastern')
+        easttime = utctime.astimezone(easttz)
+
+
+        self.date_time = easttime
         self.base62id = BaseConvert.encode(self.id, "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ");
 
     def __repr__(self):
