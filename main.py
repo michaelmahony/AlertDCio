@@ -137,7 +137,7 @@ def tweet():
         long_entry = long_entry[0:4999]
         # Has the tweet already been sent?
 
-        short_entry = long_entry[0:116]
+        short_entry = long_entry[0:115]
         missing = Tweet.query.filter_by(short_text=short_entry).first()
         if missing is not None:
             # Already tweeted, do nothing
@@ -162,7 +162,7 @@ def tweet():
                 # Save the new database state
                 db.session.commit()
 
-                alert_url = "alertdc.io/t/" + base62id
+                alert_url = " alertdc.io/t/" + base62id
                 short_entry += alert_url
 
                 # Send tweet
@@ -173,7 +173,7 @@ def tweet():
                 tweeted = True
 
                 response += "Tweeted: " + short_entry + "<br>"
-                time.sleep(2)
+                time.sleep(1)
             except:
                 pass
 
