@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="content">
+        <h2>Showing The Ten Most Recent Alerts</h2>
+
+        <h4 class="disclaimer">Disclaimer:</h4>
+        <p class="disclaimer">
+            All text is recreated exactly as it is seen on the official source.
+            AlertDC.io and @crimealertsdc are not affiliated with DC Government or Police.
+        </p>
+
+        <p class="disclaimer">
+            Many alerts regard violent crime. Do not take action, instead call
+            911 with the event number if listed.
+        </p>
+
+
+
+        {% for tweet in tweet_list %}
+            <div class="alertList">
+                <h3>Full Alert Text:</h3>
+                <p>{{ tweet.long_text }}</p>
+                <h4>Originally recorded at:</h4>
+                <p>{{ tweet.date_time.strftime('%B %d, %Y - %-I:%M %p') }}</p>
+                <a href="alertdc.io/t/{{ tweet.base62id }}"><h4>Direct link</h4></a>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}

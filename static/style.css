@@ -1,0 +1,25 @@
+
+body {
+    font-family: 'Slabo 27px', serif;
+    /*background-color: red;*/
+}
+
+.disclaimer {
+    font-style: italic;
+}
+
+.content {
+    margin: auto;
+    max-width: 550px;
+}
+
+.alertList {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    paddding-right: 1em;
+    padding-left: 1em;
+}
+
+.alertList:nth-child(odd) {
+    background-color: rgba(0,0,0,.1);
+}
