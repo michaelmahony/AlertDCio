@@ -9,7 +9,7 @@ def run():
     finished = False
     while(finished == False):
         try:
-            response = requests.get('http://mighty-retreat-74693.herokuapp.com/', headers=headers, verify=False)
+            response = requests.get('http://mighty-retreat-74693.herokuapp.com/update_tweets_2016', headers=headers, verify=False)
             response = response.text.split("<br>")[-1]
             print(response)
             time.sleep(300)

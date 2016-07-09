@@ -89,12 +89,13 @@ class Tweet(db.Model):
     def __repr__(self):
         return str(self.long_text)
 
-# Initialize flask-admin
-admin = Admin(app, template_mode='bootstrap3')
-admin.add_view(ModelView(Tweet, db.session))
+
+# # Initialize flask-admin
+# admin = Admin(app, template_mode='bootstrap3')
+# admin.add_view(ModelView(Tweet, db.session))
 
 @app.route("/update_tweets_2016", methods=['GET', 'POST'])
-@login_required
+# @login_required
 def tweet():
 
     print ('Called')
