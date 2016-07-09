@@ -84,15 +84,7 @@ class Tweet(db.Model):
     def __init__(self, long_text, short_text):
         self.long_text = long_text
         self.short_text = short_text
-
-        utctime = datetime.datetime.utcnow()
-        utctz = pytz.utc
-        utctime = utctz.localize(utctime)
-        easttz = pytz.timezone('US/Eastern')
-        easttime = utctime.astimezone(easttz)
-
-
-        self.date_time = easttime
+        self.date_time = datetime.datetime.now()
         self.base62id = BaseConvert.encode(self.id, "123456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ");
 
     def __repr__(self):
