@@ -3,8 +3,9 @@
 {% block body %}
     <div class="content">
         <h3>Full Alert Text:</h3>
-        <p>{{ tweet.long_text }}</p>
+        <p>{{ tweet.long_text|join('<br>'|safe) }}</p>
 
+        <br>
         <p class="disclaimer">
             Many alerts regard violent crime. Do not take action, instead call
             911 with the event number if listed.

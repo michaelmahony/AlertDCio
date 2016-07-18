@@ -91,7 +91,7 @@ class Tweet(db.Model):
         return str(self.long_text)
 
 
-# # Initialize flask-admin
+# Initialize flask-admin
 # admin = Admin(app, template_mode='bootstrap3')
 # admin.add_view(ModelView(Tweet, db.session))
 
@@ -99,9 +99,7 @@ class Tweet(db.Model):
 # @login_required
 def tweet():
 
-    print ('Called')
-
-
+    # Get the RSS feed from hsema
     try:
         headers = {'User-Agent': 'Chrome 41.0.2228.0'}
         response = requests.get('http://trainingtrack.hsema.dc.gov/NRss/RssFeed/AlertDCList?showlink=n&type=iframe&id=912370&hash=36b986985ed3f06443ebb13a0ef1b4ff', headers=headers, verify=False)
@@ -110,10 +108,12 @@ def tweet():
 
     data = response.text
 
+    # Parse the HTML
     soup = bs4.BeautifulSoup(data, "html5lib")
     entries = soup.findAll("td", {"class": "head"})
     parsed_list = []
 
+    # For each alert
     for index, entry in enumerate(entries):
         parsed_list.append(entry.text)
         try:
@@ -191,12 +191,28 @@ def tweet():
 
     return response
 
+
+
+
+
+
+
 @app.route("/", methods=['GET', 'POST'])
 def recentTweets():
+    # Show the most recent ten alerts
     query = db.session.query(Tweet).order_by(Tweet.id.desc()).limit(10)
     results_list = [u.__dict__ for u in query.all()]
 
+    for index, element in enumerate(results_list):
+        print(element)
+        results_list[index]['long_text'] = results_list[index]['long_text'].split('\n')
+
     return render_template('index.html', tweet_list=results_list)
+
+
+
+
+
 
 
 @app.route("/t/<base62id>")
@@ -212,7 +228,8 @@ def tweetView(base62id):
 
     tweet_detail = {
         'date_time' : the_tweet.date_time,
-        'long_text' : the_tweet.long_text,
+        # Split the long text at every new line character so that we can use jinja's join | safe method
+        'long_text' : the_tweet.long_text.split('\n'),
         'base62id' : the_tweet.base62id,
     }
 

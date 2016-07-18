@@ -20,7 +20,7 @@
         {% for tweet in tweet_list %}
             <div class="alertList">
                 <h3>Full Alert Text:</h3>
-                <p>{{ tweet.long_text }}</p>
+                <p>{{ tweet.long_text|join('<br>'|safe) }}</p>
                 <h4>Originally recorded at:</h4>
                 <p>{{ tweet.date_time.strftime('%B %d, %Y - %-I:%M %p') }}</p>
                 <a href="t/{{ tweet.base62id }}"><h4>Direct link</h4></a>
