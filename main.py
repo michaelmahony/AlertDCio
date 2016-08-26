@@ -22,20 +22,16 @@ import BaseConvert
 
 # C:\Users\User1\TweetDC\Scripts\Activate
 
-TWILIO_SID = "AC7df090b4f11ecf908a168fdceb92f852"
-TWILIO_SECRET = "5e6c04bca18df9bdda58c9292ae77ee0"
-
-CONSUMER_KEY ="FEuWmFAQ823t84qvzU75si5It"
-CONSUMER_SECRET = "dYnFyUvZgJoWZtza8McSvzVUUCFVmUOVqwMRRWIeRDIMI1ZOAN"
-ACCESS_KEY = "737332271301201920-fsM0ISlUk9cgwwmvNI0VnP2gAANzY3P"
-ACCESS_SECRET = "TF6UuUst6gV02IYQ23oQPiDGecfmoj5Y0ucYXtZ9K39pf"
+CONSUMER_KEY = os.environ['TWITTER_CONSUMER_KEY']
+CONSUMER_SECRET = os.environ['TWITTER_CONSUMER_SECRET']
+ACCESS_KEY = os.environ['TWITTER_ACCESS_KEY']
+ACCESS_SECRET = os.environ['TWITTER_CONSUMER_SECRET']
 
 app = Flask(__name__)
 
-app.secret_key = 'jsfajgpoiahgpioand;lmnspofihwpifha[oksdfjaposihfPIUFHPOIKJfpaoshf'
+app.secret_key = os.environ['APP_SECRET']
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://aycfvofyykjlpb:jcKi1FKYzalEXc2kO6xM3e2S4w@ec2-54-235-125-38.compute-1.amazonaws.com:5432/dcnp19lrmuogfm'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
 # Define database modelst
