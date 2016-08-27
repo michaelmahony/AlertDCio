@@ -1,24 +1,16 @@
-import os
-
-from flask import Flask, request, redirect, render_template, flash, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-
-from pprint import pprint
-
-import html
-import tweepy
-import requests
-import bs4
-import shelve
-import time
 import datetime
-from datetime import timezone, timedelta
-import pytz
-import BaseConvert
+import html
+import os
+import time
+
+import bs4
+import requests
+import tweepy
+from flask import Flask, redirect, render_template, flash
+from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
+from flask_sqlalchemy import SQLAlchemy
+
+from business_logic import BaseConvert
 
 # C:\Users\User1\TweetDC\Scripts\Activate
 
