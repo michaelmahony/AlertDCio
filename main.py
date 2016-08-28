@@ -11,6 +11,7 @@ from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMix
 from flask_sqlalchemy import SQLAlchemy
 
 from business_logic import BaseConvert
+from business_logic import AlertParser
 
 # C:\Users\User1\TweetDC\Scripts\Activate
 
@@ -88,34 +89,7 @@ class Tweet(db.Model):
 def tweet():
 
     # Get the RSS feed from hsema
-    try:
-        headers = {'User-Agent': 'Chrome 41.0.2228.0'}
-        response = requests.get('http://trainingtrack.hsema.dc.gov/NRss/RssFeed/AlertDCList?showlink=n&type=iframe&id=912370&hash=36b986985ed3f06443ebb13a0ef1b4ff', headers=headers, verify=False)
-    except:
-        return "Failed during request of rss feed"
-
-    data = response.text
-
-    # Parse the HTML
-    soup = bs4.BeautifulSoup(data, "html5lib")
-    entries = soup.findAll("td", {"class": "head"})
-    parsed_list = []
-
-    # For each alert
-    for index, entry in enumerate(entries):
-        parsed_list.append(entry.text)
-        try:
-            parsed_list[index] = "\n".join(parsed_list[index].split("\n")[3:])
-            parsed_list[index] = parsed_list[index].strip()
-            parsed_list[index] = parsed_list[index].split("Alert:", 1)[-1]
-        except:
-            pass
-
-    # Remove empty elements
-    parsed_list = [x for x in parsed_list if x != ""]
-
-    # Unescape HTML
-    parsed_list = [html.unescape(x) for x in parsed_list]
+    parsed_list = AlertParser.scrape_alerts()
 
     tweeted = False
 
