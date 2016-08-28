@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="content">
+    <table>
+        {% for tweet in tweet_list %}
+            <tr>
+                <td>
+                    {% if tweet.new_tweet == True %}
+                        New tweet:
+                    {% else %}
+                        Already tweeted:
+                    {% endif %}
+                </td>
+                <td>
+                    {{ tweet.short_text }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    </div>
+{% endblock %}

@@ -91,23 +91,31 @@ def tweet():
     # Get the RSS feed from hsema
     parsed_list = AlertParser.scrape_alerts()
 
-    tweeted = False
-
-    response = ""
+    # tweet_list will be rendered
+    tweet_list = []
 
     for index, long_entry in enumerate(parsed_list):
+        tweet_list.append({})
+
         # limit the long entry to 5000 chars
         long_entry = long_entry[0:4999]
         # Has the tweet already been sent?
 
         short_entry = long_entry[0:115]
+        tweet_list[index]['short_text'] = short_entry
+
+
         missing = Tweet.query.filter_by(short_text=short_entry).first()
+
+
         if missing is not None:
             # Already tweeted, do nothing
-            response += "Already tweeted this: " + short_entry +"<br>"
+            tweet_list[index]['new_tweet'] = False
 
         else:
             try:
+                tweet_list[index]['new_tweet'] = True
+
                 # Add the new tweet to the database
                 tweet = Tweet(long_entry, short_entry)
                 db.session.add(tweet)
@@ -133,25 +141,13 @@ def tweet():
                 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
                 api = tweepy.API(auth)
                 api.update_status(short_entry)
-                tweeted = True
 
-                response += "Tweeted: " + short_entry + "<br>"
                 time.sleep(1)
             except:
                 pass
 
 
-
-
-
-    response += "\n"
-
-    if tweeted:
-        response += "Issued tweet"
-    else:
-        response += "No update "
-
-    return response
+    return render_template('update.html', tweet_list=tweet_list)
 
 
 
